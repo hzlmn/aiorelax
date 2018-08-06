@@ -1,9 +1,12 @@
 import asyncio
+import logging
 from functools import partialmethod
 
 import aiohttp
 import async_timeout
 from yarl import URL
+
+logger = logging.getLogger(__name__)
 
 
 class Client:
@@ -31,6 +34,7 @@ class Client:
         if session is None:
             session = aiohttp.ClientSession(
                 auth=auth,
+                raise_for_status=True,
                 connector=aiohttp.TCPConnector(
                     use_dns_cache=True, loop=loop, verify_ssl=verify_ssl
                 ),
@@ -38,6 +42,16 @@ class Client:
         self.session = session
 
         self.headers = {}
+
+    def __call__(self, path=None):
+        base_url = self.base_url / path
+        return type(self)(
+            base_url,
+            loop=self.loop,
+            session=self.session,
+            auth=self.auth,
+            timeout=self.timeout,
+        )
 
     async def close(self):
         await self.session.close()
@@ -58,8 +72,13 @@ class Client:
 
     get = partialmethod(request, "GET")
 
+    head = partialmethod(request, "HEAD")
+
     post = partialmethod(request, "POST")
 
     put = partialmethod(request, "PUT")
 
     delete = partialmethod(request, "DELETE")
+
+    # A special method that can be used to copy documents and objects.
+    copy = partialmethod(request, "COPY")
