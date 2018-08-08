@@ -1,4 +1,5 @@
 import asyncio
+import operator
 import warnings
 
 import aiohttp
@@ -6,7 +7,7 @@ from yarl import URL
 
 from .client import Client
 from .database import Database
-from .helpers import expect_version
+from .helpers import match_version
 
 
 class Server:
@@ -63,6 +64,11 @@ class Server:
         resp = await self.client.get("_membership")
         return await resp.json()
 
+    @match_version("1.6.1", compare=operator.lt)
+    async def stats(self):
+        raise NotImplementedError
+
+    @match_version("2.0.0")
     async def cluster_setup(self, feed=None, timeout=None, heartbeat=None, since=None):
         feed_values = ("normal", "longpool", "continuous", "eventsource")
         params = {}

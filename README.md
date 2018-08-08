@@ -9,7 +9,7 @@ CouchDB driver for asyncio without pain in ass.
 ## Features
 
   * Simple and tiny
-  * Support latest stable `CouchDB`
+  * Support latest stable `CouchDB` but also compatible with older versions
   * Python3.5+
 
 
