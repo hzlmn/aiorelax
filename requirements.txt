@@ -13,5 +13,5 @@ injections==0.2.2
 multidict==4.3.1
 toml==0.9.4
 trafaret==1.2.0
-urllib3==1.23
+urllib3==1.26.5
 yarl==1.2.6
